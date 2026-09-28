@@ -1,0 +1,55 @@
+[project]
+name = "fleet-api"
+version = "0.1.0"
+description = "Mini-service de supervision d'une flotte de robots — support du module Usine Logicielle et CI/CD"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.116",
+    "psycopg[binary]>=3.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "httpx>=0.28",
+    "ruff>=0.14",
+    "mypy>=1.18",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fleet_api"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers"
+pythonpath = ["src"]
+markers = [
+    "integration: test nécessitant une base de données (séance 5)",
+]
+
+[tool.ruff]
+line-length = 88
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "PT"]
+
+[tool.ruff.lint.flake8-bugbear]
+# `Depends()` en valeur par défaut est le mécanisme d'injection de FastAPI :
+# la règle B008 est ici un faux positif, et l'exception est documentée par ruff.
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.Path"]
+
+[tool.coverage.run]
+source = ["src/fleet_api"]
+branch = true
+
+[tool.mypy]
+files = ["src"]
+python_version = "3.14"
+strict = false
