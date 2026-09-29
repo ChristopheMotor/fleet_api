@@ -7,7 +7,13 @@ Tout le reste est à écrire — voir le TD 1.
 import pytest
 
 from fleet_api.models import Position
-from fleet_api.telemetry import battery_percentage, distance_m
+from fleet_api.telemetry import (
+    average_speed_mps,
+    battery_percentage,
+    distance_m,
+    is_low_battery,
+    path_length_m,
+)
 
 # ---------------------------------------------------------------------------
 # Exemple 1 — un test simple, avec un cas nominal et les deux bornes.
@@ -59,3 +65,19 @@ def test_battery_percentage_rejette_des_bornes_incoherentes():
 # Écrivez-les en vous appuyant sur les docstrings, qui font foi.
 # Trois de ces fonctions ne respectent pas leur spécification.
 # ---------------------------------------------------------------------------
+def test_is_low_battery():
+    assert is_low_battery(15.0)
+    assert is_low_battery(20.0)
+    assert not is_low_battery(50.0)
+
+
+def test_path_length_m():
+    assert path_length_m([]) == 0.0
+    assert path_length_m([Position(0, 0)]) == 0.0
+    assert path_length_m([Position(0, 0), Position(3, 4), Position(3, 0)]) == 9.0
+
+
+def test_average_speed_mps():
+    assert average_speed_mps(10.0, 5.0) == 2.0
+    assert average_speed_mps(10.0, 0.0) is None
+    assert average_speed_mps(10.0, -1.0) is None
