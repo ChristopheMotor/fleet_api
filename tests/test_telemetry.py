@@ -66,7 +66,7 @@ def test_battery_percentage_rejette_des_bornes_incoherentes():
 # Trois de ces fonctions ne respectent pas leur spécification.
 # ---------------------------------------------------------------------------
 def test_is_low_battery():
-    assert not is_low_battery(15.0)
+    assert is_low_battery(15.0)
     assert is_low_battery(20.0)
     assert not is_low_battery(50.0)
 
