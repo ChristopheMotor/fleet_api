@@ -78,3 +78,42 @@ testées et bien intégrées que six bâclées.
 | 6 | Couverture, typage, analyse statique, quality gate |
 | 7 | Release versionnée, environnements, bascule et retour arrière |
 | 8 | Revue croisée, finalisation |
+
+## TD 2
+
+### Durées
+
+| Run | Durée totale |
+|---|---|
+| Cache froid | 20 s |
+| Cache chaud | 17 s |
+
+Détail du run cache chaud :
+
+| Tâche | Durée | Installer uv | uv sync | Commande |
+|---|---|---|---|---|
+| lint | 10 s | 4 s | - | 0 s |
+| test (3.12) | 8 s | 2 s | 0 s | 2 s |
+| test (3.13) | 11 s | 2 s | 2 s | 1 s |
+| test (3.14) | 11 s | 2 s | 2 s | 1 s |
+| build | 10 s | 3 s | - | 1 s |
+
+### Pourquoi la matrice sur test et pas sur lint ?
+
+ruff analyse le code sans l'exécuter, son résultat ne dépend pas de la version de
+Python qui le lance. Le lancer trois fois coûterait trois fois plus pour le même
+résultat. Les tests, eux, exécutent le code, donc le comportement peut changer
+d'une version à l'autre.
+
+### Où passe le temps ?
+
+Presque pas dans nos commandes : ruff, pytest et uv build prennent 1 à 2 s. Le
+reste c'est le prix fixe de chaque tâche : démarrage de la machine, checkout,
+installation de uv et des dépendances. Le cache ne gagne que quelques secondes
+parce que le projet a peu de dépendances.
+
+### Qu'est-ce qu'on ferait en premier pour accélérer ?
+
+Ne pas découper plus : chaque tâche paie ce prix fixe. On pourrait même regrouper
+lint et build dans une seule tâche. Ensuite limiter la matrice aux versions
+qu'on supporte vraiment.
