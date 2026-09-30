@@ -12,10 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Installer uv
-        uses: astral-sh/setup-uv@v10.0.1
-        with:
-          enable-cache: true
+      - uses: ./.github/actions/setup
 
       - name: Vérifier le formatage
         run: uv run ruff format --check .
@@ -29,18 +26,12 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.12", "3.13", "3.14"]
-    env:
-      UV_PYTHON: ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v7
 
-      - name: Installer uv
-        uses: astral-sh/setup-uv@v10.0.1
+      - uses: ./.github/actions/setup
         with:
-          enable-cache: true
-
-      - name: Installer les dépendances
-        run: uv sync
+          python-version: ${{ matrix.python-version }}
 
       - name: Vérifier la version de Python
         run: uv run python --version
@@ -60,10 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Installer uv
-        uses: astral-sh/setup-uv@v10.0.1
-        with:
-          enable-cache: true
+      - uses: ./.github/actions/setup
 
       - name: Construire le paquet
         run: uv build
